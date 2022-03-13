@@ -101,7 +101,7 @@ def start_job(job):
         log.exception(str(e))
         raise JobError("Out of disk space, please try again later")
     action_args = shlex.split(job.run_command)
-    allow_network_access = False
+    allow_network_access = True
     env = {"OPENSAFELY_BACKEND": config.BACKEND}
     # Check `is True` so we fail closed if we ever get anything else
     if is_generate_cohort_command(action_args) is True:

@@ -4,8 +4,12 @@ import re
 import sys
 from pathlib import Path
 import configparser
-from opensafely._vendor import requests
-from opensafely._vendor.ruamel.yaml import YAML
+
+# from opensafely._vendor import requests
+import requests
+
+# from opensafely._vendor.ruamel.yaml import YAML
+from ruamel.yaml import YAML
 
 DESCRIPTION = "Check the opensafely project for correctness"
 
@@ -15,7 +19,7 @@ RESTRICTED_DATASETS = {
     "isaric": ["with_an_isaric_record"]  
 }
 
-PERMISSIONS_URL = "https://raw.githubusercontent.com/opensafely-core/opensafely-cli/main/repository_permissions.yaml"
+PERMISSIONS_URL = "https://raw.githubusercontent.com/mediciaai/opensafely-cli/main/repository_permissions.yaml"
 
 
 def add_arguments(parser):

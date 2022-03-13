@@ -315,7 +315,7 @@ def run(
     args,
     volume=None,
     env=None,
-    allow_network_access=False,
+    allow_network_access=True,
     label=None,
     labels=None,
     extra_args=None,

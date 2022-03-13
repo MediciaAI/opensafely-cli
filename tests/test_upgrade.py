@@ -4,16 +4,18 @@ import sys
 from datetime import datetime, timedelta
 
 import pytest
-from requests_mock import mocker
+# from requests_mock import mocker
 
 import opensafely
 from opensafely import upgrade
-from opensafely._vendor import requests
+
+# from opensafely._vendor import requests
+import requests
 
 # Because we're using a vendored version of requests we need to monkeypatch the
 # requests_mock library so it references our vendored library instead
-mocker.requests = requests
-mocker._original_send = requests.Session.send
+# mocker.requests = requests
+# mocker._original_send = requests.Session.send
 
 
 @pytest.fixture(autouse=True)

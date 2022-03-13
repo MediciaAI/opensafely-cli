@@ -9,9 +9,15 @@ import pytest
 from requests_mock import mocker
 
 from opensafely import check
-from opensafely._vendor import requests
-from opensafely._vendor.ruamel.yaml.comments import CommentedMap
-from opensafely._vendor.requests.exceptions import RequestException
+
+# from opensafely._vendor import requests
+import requests
+
+# from opensafely._vendor.ruamel.yaml.comments import CommentedMap
+from ruamel.yaml.comments import CommentedMap
+
+# from opensafely._vendor.requests.exceptions import RequestException
+from requests.exceptions import RequestException
 
 # Because we're using a vendored version of requests we need to monkeypatch the
 # requests_mock library so it references our vendored library instead

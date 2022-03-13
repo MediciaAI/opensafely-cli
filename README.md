@@ -1,6 +1,6 @@
-# OpenSAFELY Command Line Interface
+# MediciaSAFELY Command Line Interface
 
-This tool is part of the [OpenSAFELY](https://www.opensafely.org)
+This tool is part of the [MediciaSAFELY](https://www.medicia.ai/)
 project.
 
 To use it you will need to install:

@@ -4,15 +4,18 @@ import shutil
 from pathlib import Path
 
 import pytest
-from requests_mock import mocker
+
+# from requests_mock import mocker
 
 from opensafely import codelists
-from opensafely._vendor import requests
+
+# from opensafely._vendor import requests
+import requests
 
 # Because we're using a vendored version of requests we need to monkeypatch the
 # requests_mock library so it references our vendored library instead
-mocker.requests = requests
-mocker._original_send = requests.Session.send
+# mocker.requests = requests
+# mocker._original_send = requests.Session.send
 
 
 def test_codelists_update(tmp_path, requests_mock):

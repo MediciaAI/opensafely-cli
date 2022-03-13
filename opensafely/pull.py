@@ -4,15 +4,22 @@ from http.cookiejar import split_header_words
 from pathlib import Path
 from urllib.parse import urlparse
 
-from opensafely._vendor import requests
+# from opensafely._vendor import requests
+import requests
+
 from opensafely._vendor.jobrunner import config
 from opensafely._vendor.jobrunner.cli.local_run import docker_preflight_check
-from opensafely._vendor.ruamel.yaml import YAML
-from opensafely._vendor.ruamel.yaml.error import (YAMLError, YAMLFutureWarning,
-                                                  YAMLStreamError, YAMLWarning)
+
+# from opensafely._vendor.ruamel.yaml import YAML
+from ruamel.yaml import YAML
+
+from ruamel.yaml.error import (YAMLError, YAMLFutureWarning,
+                               YAMLStreamError, YAMLWarning)
+# from opensafely._vendor.ruamel.yaml.error import (YAMLError, YAMLFutureWarning,
+#                                                   YAMLStreamError, YAMLWarning)
 
 DESCRIPTION = (
-    "Command for updating the docker images used to run OpenSAFELY studies locally"
+    "Command for updating the docker images used to run MediciaSAFELY studies locally"
 )
 REGISTRY = config.DOCKER_REGISTRY
 IMAGES = list(config.ALLOWED_IMAGES)
@@ -27,7 +34,7 @@ def add_arguments(parser):
         "image",
         nargs="?",
         choices=choices,
-        help="OpenSAFELY docker image to update (default: all)",
+        help="MediciaSAFELY docker image to update (default: all)",
         default="all",
     )
     parser.add_argument(
@@ -56,6 +63,7 @@ def main(image="all", force=False, project=None):
         images = [image]
 
     local_images = get_local_images()
+    print("local_images", local_images)
     try:
         updated = False
         for image in images:
@@ -65,7 +73,7 @@ def main(image="all", force=False, project=None):
             tag = f"{REGISTRY}/{image}"
             if force or tag in local_images:
                 updated = True
-                print(f"Updating OpenSAFELY {image} image")
+                print(f"Updating MediciaSAFELY {image} image")
                 subprocess.run(["docker", "pull", tag + ":latest"], check=True)
 
         if updated:
@@ -73,7 +81,7 @@ def main(image="all", force=False, project=None):
             remove_deprecated_images(local_images)
             subprocess.run(["docker", "image", "prune", "--force"], check=True)
         else:
-            print("No OpenSAFELY docker images found to update.")
+            print("No MediciaSAFELY docker images found to update.")
 
     except subprocess.CalledProcessError as exc:
         sys.exit(exc.stderr)
@@ -109,12 +117,12 @@ def get_actions_from_project_file(project_yaml):
 
 
 def get_local_images():
-    """Returns a dict of locally installed OpenSAFELY images and their SHA."""
+    """Returns a dict of locally installed MediciaSAFELY images and their SHA."""
     ps = subprocess.run(
         [
             "docker",
             "images",
-            "ghcr.io/opensafely-core/*",
+            "ghcr.io/mediciaai/*",
             "--no-trunc",
             "--format={{.Repository}}={{.ID}}",
         ],
@@ -161,7 +169,7 @@ def get_remote_sha(full_name, tag):
 def get_auth_token(header):
     """Parse a docker v2 www-authentication header and fetch a token.
 
-    Bearer realm="https://ghcr.io/token",service="ghcr.io",scope="repository:opensafely-core/busybox:pull"
+    Bearer realm="https://ghcr.io/token",service="ghcr.io",scope="repository:mediciaai/busybox:pull"
     """
     header = header.lstrip("Bearer")
     # split_header_words is weird, but better than doing it ourselves
@@ -186,7 +194,7 @@ def check_version():
 
     if need_update:
         print(
-            f"Warning: the OpenSAFELY docker images for {', '.join(need_update)} actions are out of date - please update by running:\n"
+            f"Warning: the MediciaSAFELY docker images for {', '.join(need_update)} actions are out of date - please update by running:\n"
             "    opensafely pull\n"
         )
     return need_update

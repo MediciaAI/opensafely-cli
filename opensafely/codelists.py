@@ -7,7 +7,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-from opensafely._vendor import requests
+# from opensafely._vendor import requests
+import requests
 
 DESCRIPTION = "Commands for interacting with https://codelists.opensafely.org/"
 

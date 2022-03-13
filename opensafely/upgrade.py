@@ -7,7 +7,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import opensafely
-from opensafely._vendor import requests
+
+# from opensafely._vendor import requests
+import requests
 
 DESCRIPTION = "Upgrade the opensafely cli tool."
 
