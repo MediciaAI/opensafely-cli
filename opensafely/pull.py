@@ -63,7 +63,6 @@ def main(image="all", force=False, project=None):
         images = [image]
 
     local_images = get_local_images()
-    print("local_images", local_images)
     try:
         updated = False
         for image in images:
