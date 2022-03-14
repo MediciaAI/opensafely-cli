@@ -203,7 +203,7 @@ def main(directory, name, port, no_browser, unknown_args):
         "--label=opensafely",
         # note: // is to avoid git-bash path translation
         f"-v={directory.resolve()}://workspace",
-        "ghcr.io/opensafely-core/python",
+        "ghcr.io/mediciaai/python",
     ]
 
     docker_cmd = ensure_tty(docker_cmd)
