@@ -200,8 +200,11 @@ def create_and_run_jobs(
     docker.LABEL = docker_label
     # It's more helpful in this context to have things consistent
     config.RANDOMISE_JOB_ORDER = False
-    config.HIGH_PRIVACY_WORKSPACES_DIR = project_dir.parent
-    config.DATABASE_FILE = project_dir / "metadata" / "db.sqlite"
+
+    # Ahmed Gad // Comment these lines to force using the /workdir defined in the config.py script.
+    # config.HIGH_PRIVACY_WORKSPACES_DIR = project_dir.parent
+    # config.DATABASE_FILE = project_dir / "metadata" / "db.sqlite"
+
     config.TMP_DIR = temp_dir
     config.JOB_LOG_DIR = temp_dir / "logs"
     config.BACKEND = "expectations"

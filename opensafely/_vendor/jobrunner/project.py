@@ -8,6 +8,8 @@ from types import SimpleNamespace
 from opensafely._vendor.jobrunner import config
 from opensafely._vendor.jobrunner.lib.yaml_utils import YAMLError, parse_yaml
 
+from pathlib import Path
+
 # The magic action name which means "run every action"
 RUN_ALL_COMMAND = "run_all"
 
@@ -274,7 +276,12 @@ def get_all_actions(project):
 
 
 def get_all_output_patterns_from_project_file(project_file):
-    project = parse_and_validate_project_file(project_file)
+    # Ahmed Gad // The parse_and_validate_project_file() function expects the file contents in bytes (not the file path).
+    # Ahmed Gad // The path should be of type pathlib.Path to call the read_bytes() function.
+    project_file = Path(project_file).resolve()
+    project = parse_and_validate_project_file(project_file.read_bytes())
+    # project = parse_and_validate_project_file(project_file)
+
     all_patterns = set()
     for action in project["actions"].values():
         for patterns in action["outputs"].values():

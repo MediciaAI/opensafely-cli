@@ -167,7 +167,10 @@ def create_and_populate_volume(job):
     else:
         # We only encounter jobs without a repo or commit when using the
         # "local_run" command to execute uncommitted local code
-        copy_local_workspace_to_volume(volume, workspace_dir, extra_dirs)
+
+        # Ahmed Gad // use job.repo_url (where the project.yaml file exists) instead of workspace_dir.
+        # copy_local_workspace_to_volume(volume, workspace_dir, extra_dirs)
+        copy_local_workspace_to_volume(volume, Path(job.repo_url).resolve(), extra_dirs)
 
     for filename, action in input_files.items():
         log.info(f"Copying input file {action}: {filename}")
