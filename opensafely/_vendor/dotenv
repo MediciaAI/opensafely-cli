@@ -1,0 +1,48 @@
+# The name of this backend
+BACKEND=tpp
+
+# The endpoint to poll for jobs
+JOB_SERVER_ENDPOINT=https://192.168.1.100/jobs/
+
+# Credentials for logging into the job server
+JOB_SERVER_TOKEN=pass
+
+# A location where cohort CSVs (one row per patient) should be
+# stored. This folder must exist.
+HIGH_PRIVACY_STORAGE_BASE=./workdir/high_privacy/workspaces
+# Or in Windows:
+# HIGH_PRIVACY_STORAGE_BASE=/e/Users/opensafely/high_security
+
+# A location where script outputs (some for publication) should be
+# stored
+MEDIUM_PRIVACY_STORAGE_BASE=./workdir/medium_privacy/workspaces
+
+# A Github developer token that has read access to private repos
+PRIVATE_REPO_ACCESS_TOKEN=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
+
+# A database containing dummy data; results from this could be freely
+# published without review
+DUMMY_DATABASE_URL=mssql://xxx
+
+# A database containing a slice of the full data; useful for checking
+# or debuggin real data without potentially having to wait for hours
+# for completion
+SLICE_DATABASE_URL=mssql://xxx
+
+# The full database
+FULL_DATABASE_URL=postgres://postgres:1234@192.168.0.16:5432/rcloud
+
+# Database in which we can create temporary tables
+TEMP_DATABASE_NAME=
+
+# How frequently to poll the job-server to pick up new JobRequests and post
+# updates to Jobs
+POLL_INTERVAL=5
+
+# How frequently to poll internal database and Docker for the current state of
+# active jobs
+JOB_LOOP_INTERVAL=1.0
+
+# Default is number of CPUs minus one. Change this to reduce parallelism
+MAX_WORKERS=
+
