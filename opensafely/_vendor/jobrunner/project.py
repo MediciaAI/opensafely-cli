@@ -8,8 +8,6 @@ from types import SimpleNamespace
 from opensafely._vendor.jobrunner import config
 from opensafely._vendor.jobrunner.lib.yaml_utils import YAMLError, parse_yaml
 
-from pathlib import Path
-
 # The magic action name which means "run every action"
 RUN_ALL_COMMAND = "run_all"
 
@@ -62,22 +60,25 @@ def validate_project_and_set_defaults(project):
     feat = get_feature_flags_for_version(project.get("version"))
     seen_runs = []
     seen_output_files = []
-    if feat.EXPECTATIONS_POPULATION:
-        if "expectations" not in project:
-            raise ProjectValidationError("Project must include `expectations` section")
-        if "population_size" not in project["expectations"]:
-            raise ProjectValidationError(
-                "Project `expectations` section must include `population` section",
-            )
-        try:
-            int(project["expectations"]["population_size"])
-        except TypeError:
-            raise ProjectValidationError(
-                "Project expectations population size must be a number",
-            )
-    else:
-        project["expectations"] = {}
-        project["expectations"]["population_size"] = 1000
+
+    # Ahmed Gad // This is responsible for checking for the (expectations) section in the project.yaml file.
+    # This is replaced by declaring the population size using the (--population-size) argument of the (cohortextractor generate_cohort) command.
+    # if feat.EXPECTATIONS_POPULATION:
+        # if "expectations" not in project:
+        #     raise ProjectValidationError("Project must include `expectations` section")
+        # if "population_size" not in project["expectations"]:
+        #     raise ProjectValidationError(
+        #         "Project `expectations` section must include `population` section",
+        #     )
+        # try:
+        #     int(project["expectations"]["population_size"])
+        # except TypeError:
+        #     raise ProjectValidationError(
+        #         "Project expectations population size must be a number",
+        #     )
+    # else:
+    #     project["expectations"] = {}
+    #     project["expectations"]["population_size"] = 1000
 
     project_actions = project["actions"]
 
@@ -173,12 +174,16 @@ def get_action_specification(project, action_id):
         # Set the size of the dummy data population, if that's what we're
         # generating.  Possibly this should be moved to the study definition
         # anyway, which would make this unnecessary.
-        if config.USING_DUMMY_DATA_BACKEND:
-            if "dummy_data_file" in action_spec:
-                run_command += f" --dummy-data-file={action_spec['dummy_data_file']}"
-            else:
-                size = int(project["expectations"]["population_size"])
-                run_command += f" --expectations-population={size}"
+
+
+        # Ahmed Gad // No dummy data supported anymore. Moreover, the --expectations-population is no longer used.
+        # if config.USING_DUMMY_DATA_BACKEND:
+        #     if "dummy_data_file" in action_spec:
+        #         run_command += f" --dummy-data-file={action_spec['dummy_data_file']}"
+        #     else:
+        #         size = int(project["expectations"]["population_size"])
+        #         run_command += f" --expectations-population={size}"
+
         # Automatically configure the cohortextractor to produce output in the
         # directory the `outputs` spec is expecting. Longer term I'd like to
         # just make it an error if the directories don't match, rather than
@@ -248,7 +253,7 @@ def is_generate_cohort_command(args, require_version=None):
     """
     assert not isinstance(args, str)
     version_found = None
-    if len(args) > 1 and args[1] == "generate_cohort":
+    if len(args) > 1 and args[1] in ("generate_cohort", "generate_dataset"):
         if args[0].startswith("cohortextractor:"):
             version_found = 1
         # databuilder is a rebranded cohortextractor-v2.
@@ -276,11 +281,9 @@ def get_all_actions(project):
 
 
 def get_all_output_patterns_from_project_file(project_file):
-    # Ahmed Gad // The parse_and_validate_project_file() function expects the file contents in bytes (not the file path).
-    # Ahmed Gad // The path should be of type pathlib.Path to call the read_bytes() function.
-    project_file = Path(project_file).resolve()
-    project = parse_and_validate_project_file(project_file.read_bytes())
-    # project = parse_and_validate_project_file(project_file)
+    # project_file = Path(project_file).resolve()
+    # project = parse_and_validate_project_file(project_file.read_bytes())
+    project = parse_and_validate_project_file(project_file)
 
     all_patterns = set()
     for action in project["actions"].values():

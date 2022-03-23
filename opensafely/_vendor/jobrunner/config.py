@@ -132,13 +132,13 @@ ACTIONS_GITHUB_ORG = "opensafely-actions"
 ACTIONS_GITHUB_ORG_URL = f"https://github.com/{ACTIONS_GITHUB_ORG}"
 
 ALLOWED_GITHUB_ORGS = (
-    os.environ.get("ALLOWED_GITHUB_ORGS", "opensafely").strip().split(",")
+    os.environ.get("ALLOWED_GITHUB_ORGS", "mediciaai").strip().split(",")
 )
 
 # We hardcode this for now, as from a security perspective, we do not want it
 # to be run time configurable. Though we do override this in `local_run.py` as
 # we don't want to push traffic via the proxy when running locally.
-GIT_PROXY_DOMAIN = "github-proxy.opensafely.org"
+GIT_PROXY_DOMAIN = "github.com"
 
 
 def parse_job_resource_weights(config_file):

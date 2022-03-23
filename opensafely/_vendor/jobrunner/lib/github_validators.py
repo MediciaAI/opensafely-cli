@@ -9,21 +9,33 @@ class GithubValidationError(Exception):
 
 def validate_repo_url(repo_url, allowed_gitub_orgs):
     parsed_url = urlparse(repo_url)
-    if parsed_url.scheme != "https" or parsed_url.netloc != "github.com":
+
+    # Ahmed Gad
+    # if parsed_url.scheme != "https" or parsed_url.netloc != "github.com":
+    if parsed_url.scheme != "https" or parsed_url.netloc.lower() != "github.com":
         raise GithubValidationError("Repository URLs must start https://github.com")
-    path = parsed_url.path.strip("/").split("/")
-    if not path or path[0] not in allowed_gitub_orgs:
+
+    # Ahmed Gad
+    # path = parsed_url.path.strip("/").split("/")
+    path = parsed_url.path.strip("/").lower().split("/")
+
+    # Ahmed Gad // path[0].lower() is used instead of just path[0] to be case-insensitive when matching the GitHub organization name.
+    # Previously, if the allowed organization name is set to mediciaai and the research study URL have MediciaAI, they will not be matched.
+    # if not path or path[0] not in allowed_gitub_orgs:
+    if not path or path[0].lower() not in allowed_gitub_orgs:
         raise GithubValidationError(
             f"Repositories must belong to one of the following Github "
             f"organisations: {' '.join(allowed_gitub_orgs)}"
         )
     expected_url = f"https://github.com/{'/'.join(path[:2])}"
-    if repo_url.rstrip("/") != expected_url or len(path) != 2:
+
+    # Ahmed Gad
+    # if repo_url.rstrip("/") != expected_url or len(path) != 2:
+    if repo_url.lower().rstrip("/") != expected_url or len(path) != 2:
         raise GithubValidationError(
             "Repository URL was not of the expected format: "
             "https://github.com/[organisation]/[project-name]"
         )
-
 
 def validate_branch_and_commit(repo_url, commit, branch):
     """

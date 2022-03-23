@@ -6,7 +6,6 @@ import logging
 import sys
 import time
 
-# from opensafely._vendor import requests
 import requests
 
 from opensafely._vendor.jobrunner import config

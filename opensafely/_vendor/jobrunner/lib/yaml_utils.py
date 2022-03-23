@@ -1,4 +1,3 @@
-# from opensafely._vendor.ruamel.yaml import YAML, error
 from ruamel.yaml import YAML, error
 
 

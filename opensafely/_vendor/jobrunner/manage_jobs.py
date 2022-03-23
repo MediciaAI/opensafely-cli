@@ -30,6 +30,16 @@ from opensafely._vendor.jobrunner.project import (
 )
 from opensafely._vendor.jobrunner.queries import calculate_workspace_state
 
+import opensafely._vendor.jobrunner.patients
+
+from numpy.random import randint
+
+seed = str(randint(low=0, high=10, size=1)[0])
+
+# print("%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+# print("Seed is", seed)
+# print("%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+
 log = logging.getLogger(__name__)
 
 # Directory inside working directory where manifest and logs are created
@@ -167,10 +177,8 @@ def create_and_populate_volume(job):
     else:
         # We only encounter jobs without a repo or commit when using the
         # "local_run" command to execute uncommitted local code
-
-        # Ahmed Gad // use job.repo_url (where the project.yaml file exists) instead of workspace_dir.
-        # copy_local_workspace_to_volume(volume, workspace_dir, extra_dirs)
-        copy_local_workspace_to_volume(volume, Path(job.repo_url).resolve(), extra_dirs)
+        copy_local_workspace_to_volume(volume, workspace_dir, extra_dirs)
+        # copy_local_workspace_to_volume(volume, Path(job.repo_url).resolve(), extra_dirs)
 
     for filename, action in input_files.items():
         log.info(f"Copying input file {action}: {filename}")
@@ -321,6 +329,31 @@ def finalise_job(job):
     for filename in job.output_files:
         log.info(f"Extracting output file: {filename}")
         docker.copy_from_volume(volume, filename, workspace_dir / filename)
+
+        # After the docker.copy_from_volume() function is executed, the output file is now copied to the local workspace in the jobrunner.
+
+        # print("%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+        # print("seed", seed)
+        # print("%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+
+        # Ahmed Gad
+        # The patient ID inspection must be applied only for the jobs that use the cohortextractor image. 
+        # This if statement checks if the run command starts with cohortextractor. If so, then this is a cohortextractor image and patient ID inspection must be applied.
+        if job.run_command.lower().strip().find("cohortextractor:", 0, 16) == 0:
+            # The inspect_pat_ID() function checks if the patient ID exists in any column of some randomly selected rows of the output data file.
+            # result is True if any column in any row has the patient ID.
+            result, detected_columns_names, unique_columns_names = opensafely._vendor.jobrunner.patients.inspect_pat_ID(data_file_path=workspace_dir / filename)
+            # If the patient ID found, then call the hash_columns() function to hash the ID.
+            if result:
+                print("The output data file {file} contains patient ID which is not allowed. The patient ID is replaced by a random ID.".format(file=workspace_dir / filename))
+                # Next is to apply ad-hoc hashing to the patient ID if it exists in the output file.
+                data_hashed = opensafely._vendor.jobrunner.patients.hash_columns(data_file_path=workspace_dir / filename, 
+                                                                                 columns_names=unique_columns_names, 
+                                                                                 seed=seed)
+                data_hashed.to_csv(workspace_dir / filename, index=False)
+            else:
+                pass
+                # print("No patient ID found in the file {file}".format(file=workspace_dir / filename))
 
     # Delete outputs from previous run of action. It would be simpler to delete
     # all existing outputs and then copy over the new ones, but this way we
@@ -544,6 +577,11 @@ def write_manifest_file(workspace_dir, manifest):
 
 def get_high_privacy_workspace(workspace):
     return config.HIGH_PRIVACY_WORKSPACES_DIR / workspace
+
+
+def get_high_privacy_archive(workspace):
+    name = config.HIGH_PRIVACY_STORAGE_BASE / "archives" / workspace
+    return name.with_suffix(".tar.xz")
 
 
 def get_medium_privacy_workspace(workspace):

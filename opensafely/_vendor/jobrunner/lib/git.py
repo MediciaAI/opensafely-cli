@@ -262,7 +262,9 @@ def fetch_commit(repo_dir, repo_url, commit_sha, depth=1):
     max_retries = 5
     sleep = 4
     attempt = 1
+
     authenticated_url = add_access_token_and_proxy(repo_url)
+
     while True:
         try:
             subprocess_run(
