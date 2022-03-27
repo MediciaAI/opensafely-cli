@@ -57,7 +57,8 @@ def hash_columns(data_file_path, columns_names, seed):
     return data
 
 if __name__ == "__main__":
-    data_file_path = "C:\\Users\\agad069\\Anaconda3\\Lib\\site-packages\\workdir\\high_privacy\\workspaces\\test\\output\\input.csv"
+    # data_file_path = "C:\\Users\\agad069\\Anaconda3\\Lib\\site-packages\\workdir\\high_privacy\\workspaces\\test\\output\\input.csv"
+    data_file_path = "$HOME/job-runner/jobrunner/workdir/high_privacy/workspaces/test/output/input.csv"
     # data_file_path = "patdemographics_hashed.csv"
 
     result, detected_columns_names, unique_columns_names = inspect_pat_ID(data_file_path=data_file_path)

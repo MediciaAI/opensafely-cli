@@ -13,7 +13,8 @@ def _is_valid_backend_name(name):
     return bool(re.match(r"^[A-Za-z0-9][A-Za-z0-9_\-]*[A-Za-z0-9]$", name))
 
 
-default_work_dir = Path(__file__) / "../../workdir"
+# default_work_dir = Path(__file__) / "../../workdir"
+default_work_dir = Path(__file__) / "$HOME/job-runner/jobrunner/workdir"
 
 WORKDIR = Path(os.environ.get("WORKDIR", default_work_dir)).resolve()
 
