@@ -49,7 +49,7 @@ pytest==6.2.5
     # via -r requirements.dev.in
 regex==2020.11.13
     # via black
-requests==2.25.0
+requests==2.31.0
     # via
     #   requests-mock
     #   vendoring
