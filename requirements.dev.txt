@@ -10,7 +10,7 @@ attrs==20.3.0
     #   pytest
 black==21.10b0
     # via -r requirements.dev.in
-certifi==2020.11.8
+certifi==2023.7.22
     # via requests
 chardet==3.0.4
     # via requests
