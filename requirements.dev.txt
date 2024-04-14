@@ -19,7 +19,7 @@ click==7.1.2
     #   black
     #   pip-tools
     #   vendoring
-idna==2.10
+idna==3.7
     # via requests
 iniconfig==1.1.1
     # via pytest
