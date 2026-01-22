@@ -73,7 +73,7 @@ urllib3==1.26.5
 ruamel.yaml==0.17.21
 vendoring==0.3.3 ; python_version >= "3.8"
     # via -r requirements.dev.in
-wheel==0.36.0
+wheel==0.46.2
     # via -r requirements.dev.in
 
 # The following packages are considered to be unsafe in a requirements file:
